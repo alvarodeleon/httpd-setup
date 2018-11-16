@@ -105,7 +105,7 @@ systemctl start php73-php-fpm
  
 #Los iniciamos
 systemctl start nginx
-systemctl start mariadb
+#systemctl start mariadb
  
 #Configuramos para que todos arranque
 #desde el inicio de la ejecucion
@@ -234,7 +234,7 @@ proxy_set_header X-Forwarded-Proto \$scheme;
 proxy_set_header X-Original-Request \$request_uri;
 EOF
 
-systemctl restart mariadb
+#systemctl restart mariadb
 systemctl restart php54-php-fpm
 systemctl restart php55-php-fpm
 systemctl restart php56-php-fpm
@@ -244,3 +244,12 @@ systemctl restart php72-php-fpm
 systemctl restart php73-php-fpm
 
 systemctl restart nginx 
+
+cat > /usr/bin/setphp << EOF
+#!/bin/bash
+
+ln -sf /usr/bin/php\$1 /usr/bin/php
+
+EOF
+
+chmod +x /usr/bin/setphp
