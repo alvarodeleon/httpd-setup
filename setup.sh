@@ -205,7 +205,7 @@ server {
 }
 EOF
 
-cat > /etc/nginx/conf.d/proxy_params << EOF
+cat > /etc/nginx/proxy_params << EOF
 proxy_buffers 16 32k;
 proxy_buffer_size 64k;
 proxy_busy_buffers_size 128k;
