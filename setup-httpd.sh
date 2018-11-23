@@ -7,7 +7,7 @@ yum update -y
  
 #Opcional: En lo personal instalo todos estas herramientas y 
 #liberias porque siempre suelo utilizarlas
-yum install -y wget nano lynx git iputils net-tools nmap mtr gcc gcc-c++ make autoconf glibc rcs pcre-devel openssl-devel expat-devel geoip-devel zlib-devel mlocate ncdu mytop  composer npm
+yum install -y wget nano lynx git iputils net-tools nmap mtr gcc gcc-c++ make autoconf glibc rcs pcre-devel openssl-devel expat-devel geoip-devel zlib-devel mlocate ncdu mytop composer npm
  
 yum install yum-utils -y
  
@@ -26,6 +26,8 @@ php70-php-mysql php70-php-mcrypt php70-php-mbstring php70-php-cli php70-php-fpm 
 php71-php-mysql php71-php-mcrypt php71-php-mbstring php71-php-cli php71-php-fpm php71-php-gd php71-php-json php71-php-ioncube-loader php71-php-intl php71-php-pdo php71-php-pgsql php71-php-soap php71-php-xml php71-php-xmlrpc \
 php72-php-mysql php72-php-mcrypt php72-php-mbstring php72-php-cli php72-php-fpm php72-php-gd php72-php-json php72-php-ioncube-loader php72-php-intl php72-php-pdo php72-php-pgsql php72-php-soap php72-php-xml php72-php-xmlrpc \
 php73-php-mysql php73-php-mcrypt php73-php-mbstring php73-php-cli php73-php-fpm php73-php-gd php73-php-json php73-php-ioncube-loader php73-php-intl php73-php-pdo php73-php-pgsql php73-php-soap php73-php-xml php73-php-xmlrpc \
+
+yum -y install phpmyadmin
  
 #Detenemos estos servicios
 systemctl stop php54-php-fpm
@@ -120,7 +122,9 @@ systemctl enable php71-php-fpm
 systemctl enable php72-php-fpm
 systemctl enable php73-php-fpm
 
-cat > /etc/nginx/conf.d/example.lan.conf << EOF
+mkdir -p /etc/nginx/conf.d.example/
+
+cat > /etc/nginx/conf.d.example/example.lan.conf << EOF
 server {
  
         listen 80;
@@ -182,7 +186,7 @@ server {
 EOF
 
 
-cat > /etc/nginx/conf.d/node.lan.conf << EOF
+cat > /etc/nginx/conf.d.example/node.lan.conf << EOF
 server {
         listen 80;
         listen [::]:80;
@@ -205,7 +209,7 @@ server {
 }
 EOF
 
-cat > /etc/nginx/conf.d/proxy_params << EOF
+cat > /etc/nginx/conf.d.example/proxy_params << EOF
 proxy_buffers 16 32k;
 proxy_buffer_size 64k;
 proxy_busy_buffers_size 128k;
@@ -253,3 +257,80 @@ ln -sf /usr/bin/php\$1 /usr/bin/php
 EOF
 
 chmod +x /usr/bin/setphp
+
+echo -en "\033[1;31m" >> /etc/issue
+echo "Default";
+
+echo "System" >> /etc/issue
+echo "User: root" >> /etc/issue
+echo "Password: docker" >> /etc/issue
+echo "" >> /etc/issue
+echo "MySQL: " >> /etc/issue
+echo "User: root" >> /etc/issue
+echo "Password: empty" >> /etc/issue
+echo "" >> /etc/issue
+echo "phpMyAdmin: " >> /etc/issue
+echo "User: dbroot" >> /etc/issue
+echo "Password: dbroot" >> /etc/issue
+echo "" >> /etc/issue
+
+echo "If MySQL fail on boot and /var/lib/mysql is empty, please execute mysql_repair"
+
+echo "For more instruction: https://www.alvarodeleon.net/centos7-nginx-multiphp" >> /etc/issue
+
+echo -en "\033[0m" >> /etc/issue
+
+cat > /bin/mysql_repair << EOF
+mysql_install_db
+find /var/lib/mysql/ -type d | xargs chmod -v 700
+find /var/lib/mysql/ -type f | xargs chmod -v 660
+chmod 777 /var/lib/mysql/
+chown mysql:mysql -R /var/lib/mysql/
+service mariadb restart
+
+mysql  -u root -Bse "GRANT ALL PRIVILEGES ON *.* TO 'dbroot'@'localhost' IDENTIFIED BY 'dbroot';GRANT ALL PRIVILEGES ON *.* TO 'dbroot'@'127.0.0.1' IDENTIFIED BY 'dbroot';GRANT ALL PRIVILEGES ON *.* TO 'dbroot'@'%' IDENTIFIED BY 'dbroot';";
+
+EOF
+
+chmod +x /bin/mysql_repair
+
+
+cat > /etc/nginx/conf.d.example/phpmyadmin << EOF
+server {
+ 
+        listen 80;
+        listen [::]:80;
+ 
+        server_name phpmyadmin;
+ 
+        root /usr/share/phpMyAdmin/;
+        index index.php index.html index.htm index.nginx-debian.html;
+ 
+        location / {
+                try_files \$uri \$uri/ =404;
+        }
+ 
+        location /phpmyadmin \.php\$ {
+                alias /usr/share/phpMyAdmin/
+   
+            try_files \$uri =404;
+ 
+             #PHP 7.0
+            fastcgi_pass 127.0.0.1:9070;
+
+             fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  \$document_root\$fastcgi_script_name;
+            include        fastcgi_params;
+            fastcgi_buffer_size 128k;
+            fastcgi_buffers 256 4k;
+            fastcgi_busy_buffers_size 256k;
+            fastcgi_temp_file_write_size 256k;
+ 
+        }
+ 
+         location ~ /\.ht {
+                 deny all;
+        }
+}
+
+EOF
