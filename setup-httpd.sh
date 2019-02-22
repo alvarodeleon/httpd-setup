@@ -27,6 +27,7 @@ php71-php-mysql php71-php-mcrypt php71-php-mbstring php71-php-cli php71-php-fpm 
 php72-php-mysql php72-php-mcrypt php72-php-mbstring php72-php-cli php72-php-fpm php72-php-gd php72-php-json php72-php-ioncube-loader php72-php-intl php72-php-pdo php72-php-pgsql php72-php-soap php72-php-xml php72-php-xmlrpc \
 php73-php-mysql php73-php-mcrypt php73-php-mbstring php73-php-cli php73-php-fpm php73-php-gd php73-php-json php73-php-ioncube-loader php73-php-intl php73-php-pdo php73-php-pgsql php73-php-soap php73-php-xml php73-php-xmlrpc \
 
+yum -y install python2-pip python34 python34-pip python36 python36-pip
 yum -y install phpmyadmin
  
 #Detenemos estos servicios
