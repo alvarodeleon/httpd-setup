@@ -239,6 +239,14 @@ proxy_set_header X-Forwarded-Proto \$scheme;
 proxy_set_header X-Original-Request \$request_uri;
 EOF
 
+sed -i 's/PrivateTmp=true/PrivateTmp=false/g' /usr/lib/systemd/system/php54-php-fpm.service
+sed -i 's/PrivateTmp=true/PrivateTmp=false/g' /usr/lib/systemd/system/php55-php-fpm.service
+sed -i 's/PrivateTmp=true/PrivateTmp=false/g' /usr/lib/systemd/system/php56-php-fpm.service
+sed -i 's/PrivateTmp=true/PrivateTmp=false/g' /usr/lib/systemd/system/php70-php-fpm.service
+sed -i 's/PrivateTmp=true/PrivateTmp=false/g' /usr/lib/systemd/system/php71-php-fpm.service
+sed -i 's/PrivateTmp=true/PrivateTmp=false/g' /usr/lib/systemd/system/php72-php-fpm.service
+sed -i 's/PrivateTmp=true/PrivateTmp=false/g' /usr/lib/systemd/system/php73-php-fpm.service
+
 #systemctl restart mariadb
 systemctl restart php54-php-fpm
 systemctl restart php55-php-fpm
