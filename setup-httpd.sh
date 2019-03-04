@@ -7,7 +7,7 @@ yum update -y
  
 #Opcional: En lo personal instalo todos estas herramientas y 
 #liberias porque siempre suelo utilizarlas
-yum install -y wget nano lynx git iputils net-tools nmap mtr gcc gcc-c++ make autoconf glibc rcs pcre-devel openssl-devel expat-devel geoip-devel zlib-devel mlocate ncdu mytop composer npm
+yum install -y wget nano lynx git iputils net-tools nmap mtr gcc gcc-c++ make autoconf glibc rcs pcre-devel openssl-devel expat-devel geoip-devel zlib-devel mlocate ncdu mytop composer npm bind-utils
  
 yum install yum-utils -y
  
