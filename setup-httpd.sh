@@ -40,6 +40,7 @@ echo "extension=ssh2.so" >> /opt/remi/php54/root/etc/php.ini
 echo "extension=ssh2.so" >> /opt/remi/php55/root/etc/php.ini
 echo "extension=ssh2.so" >> /opt/remi/php56/root/etc/php.ini
 echo "extension=ssh2.so" >> /opt/remi/php56/root/etc/php.ini
+echo "extension=ssh2.so" >> /etc/opt/remi/php70/php.ini
 echo "extension=ssh2.so" >> /etc/opt/remi/php71/php.ini
 echo "extension=ssh2.so" >> /etc/opt/remi/php72/php.ini
 echo "extension=ssh2.so" >> /etc/opt/remi/php73/php.ini
