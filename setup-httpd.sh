@@ -376,3 +376,28 @@ server {
 }
 
 EOF
+
+mkdir /scripts/
+
+cat >  /scripts/chmod_session << EOF
+#!/bin/bash
+
+declare -a arr=("/opt/remi/php54/root/var/lib/php" "/opt/remi/php55/root/var/lib/php" "/var/opt/remi/php56/lib/php" "/var/opt/remi/php70/lib/php" "/var/opt/remi/php71/lib/php" "/var/opt/remi/php72/lib/php" "/var/opt/remi/php73/lib/php" "/var/opt/remi/php74/lib/php")
+
+
+for i in "\${arr[@]}"
+do
+    ATT=\$(ls -l $i | grep session | cut -d "." -f 1)
+
+    if [ "\$ATT" != "drwxrwxrwx" ]; then
+        chmod 777 -v \$i/session
+    fi
+done
+
+EOF
+
+chmod +x /scripts/chmod_session
+
+echo '* * * * * /scripts/chmod_session > /dev/null 2>&1' >> /var/spool/cron/root
+
+service crond restart
